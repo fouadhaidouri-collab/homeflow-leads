@@ -34,13 +34,18 @@ function doPost(e) {
     // Create sheet + header row if it doesn't exist
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
-      sheet.appendRow(HEADERS);
+      sheet.appendRow([
+        "Timestamp", "Type", "First Name", "Last Name", "Company",
+        "Email", "Phone", "Services", "Plan", "Located in US", "Zip Code",
+        "Employees", "Website", "Budget", "Notes", "Message"
+      ]);
     } else {
       var existingHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
       if (existingHeaders.indexOf("Plan") === -1) {
         sheet.insertColumnAfter(8);
         sheet.getRange(1, 9).setValue("Plan");
       }
+    }
     }
 
     var timestamp = new Date().toISOString();
@@ -92,7 +97,7 @@ function doPost(e) {
         data.email || "",
         data.phone || "",
         "",
-        "",
+        data.plan || "",
         "",
         "",
         "",
