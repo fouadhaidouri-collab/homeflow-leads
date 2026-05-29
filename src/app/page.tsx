@@ -240,7 +240,7 @@ export default function HomeFlowLeadsApp() {
   const [chatMessages, setChatMessages] = useState<{role:"bot"|"user";text:string}[]>([])
   const [chatInput, setChatInput] = useState("")
   const chatRef = useRef({name:"",phone:"",email:""})
-  const [chatStep, setChatStep] = useState(-1) // -1=waiting, 0=ask name, 1=ask phone, 2=ask email, 3=free
+  const [chatStep, setChatStep] = useState(-1) // -1=waiting for hi, ≥4=free chat
   const [applyOpen, setApplyOpen] = useState(false)
   const [applyStep, setApplyStep] = useState(1)
   const [scrolled, setScrolled] = useState(false)
@@ -271,23 +271,11 @@ export default function HomeFlowLeadsApp() {
     const c = chatRef.current
 
     if (chatStep === -1) {
-      setChatStep(0)
-      setTimeout(() => addBotMsg("Great! Let's start. What's your name?"), 400)
-    } else if (chatStep === 0) {
-      c.name = msg
-      setChatStep(1)
-      setTimeout(() => addBotMsg(`Nice to meet you, ${msg.split(" ")[0]}! What's the best phone number to reach you?`), 400)
-    } else if (chatStep === 1) {
-      c.phone = msg
-      setChatStep(2)
-      setTimeout(() => addBotMsg("Thanks! And your email address so we can keep you updated?"), 400)
-    } else if (chatStep === 2) {
-      c.email = msg
-      setChatStep(3)
-      submitForm({ type:"chat", name: c.name, phone: c.phone, email: msg, message: "Chat lead collected" })
-      setTimeout(() => addBotMsg(`Perfect, ${c.name.split(" ")[0]}! Your info has been saved. Now I'm all yours — ask me anything about HomeFlow Leads!`), 400)
+      setChatStep(4) // free chat straight away
+      openApplyWithChat()
+      setTimeout(() => addBotMsg(`Great, let's get started! Fill out the application form and once you're done we can chat about anything. 😊`), 400)
     } else {
-      const reply = getChatReply(msg, c.name.split(" ")[0])
+      const reply = getChatReply(msg, c.name.split(" ")[0] || "there")
       setTimeout(() => addBotMsg(reply), 500)
     }
   }
@@ -305,6 +293,11 @@ export default function HomeFlowLeadsApp() {
     services: a.services.includes(s) ? a.services.filter(x => x !== s) : [...a.services, s],
   }))
   const openApply = () => { setApplyOpen(true); setApplyStep(1); setSubmitError("") }
+  const openApplyWithChat = () => {
+    setApplyOpen(true)
+    setApplyStep(1)
+    setSubmitError("")
+  }
 
   const handleApplySubmit = async () => {
     setSubmitting(true)
