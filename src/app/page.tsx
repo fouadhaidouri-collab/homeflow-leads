@@ -241,7 +241,7 @@ export default function HomeFlowLeadsApp() {
   const [chatInput, setChatInput] = useState("")
   const chatRef = useRef({name:"",phone:"",email:""})
   const [chatStep, setChatStep] = useState(-1) // -1=waiting, 0=lead form, 3=free
-  const [leadForm, setLeadForm] = useState({ name:"", phone:"", email:"" })
+  const [leadForm, setLeadForm] = useState({ name:"", phone:"", email:"", plan:"" })
   const [applyOpen, setApplyOpen] = useState(false)
   const [applyStep, setApplyStep] = useState(1)
   const [scrolled, setScrolled] = useState(false)
@@ -275,10 +275,10 @@ export default function HomeFlowLeadsApp() {
   }
 
   const handleLeadSubmit = () => {
-    const { name, phone, email } = leadForm
+    const { name, phone, email, plan } = leadForm
     if (!name.trim() || !phone.trim() || !email.trim()) return
     chatRef.current = { name, phone, email }
-    submitForm({ type:"chat", name, phone, email, message:"Chat lead captured" })
+    submitForm({ type:"chat", name, phone, email, plan, message:"Chat lead captured" })
     setChatStep(3)
     addBotMsg(`Thanks, ${name.split(" ")[0]}! I'm here to answer any questions about HomeFlow Leads. What would you like to know?`)
   }
@@ -287,7 +287,7 @@ export default function HomeFlowLeadsApp() {
     setChatOpen(true)
     if (chatMessages.length === 0) {
       setChatStep(0)
-      setLeadForm({ name:"", phone:"", email:"" })
+      setLeadForm({ name:"", phone:"", email:"", plan:"" })
     }
   }
 
@@ -855,8 +855,8 @@ function ChatWidget({ messages, input, onInput, onSend, onClose, showLeadForm, l
   onSend: (v:string) => void
   onClose: () => void
   showLeadForm?: boolean
-  leadForm?: { name:string; phone:string; email:string }
-  setLeadForm?: (v:{name:string;phone:string;email:string}) => void
+  leadForm?: { name:string; phone:string; email:string; plan:string }
+  setLeadForm?: (v:{name:string;phone:string;email:string;plan:string}) => void
   onLeadSubmit?: () => void
 }) {
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -909,6 +909,22 @@ function ChatWidget({ messages, input, onInput, onSend, onClose, showLeadForm, l
               className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
             <input value={leadForm?.email||""} onChange={e => setLeadForm?.({ ...leadForm!, email:e.target.value })} placeholder="Email Address *"
               className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
+            <div>
+              <label className="mb-2 block text-xs font-black text-slate-600">Choose a Plan</label>
+              <div className="grid grid-cols-3 gap-2">
+                {["Starter","Growth","Premium"].map(p => (
+                  <button key={p} type="button" onClick={() => setLeadForm?.({ ...leadForm!, plan:p })}
+                    className={`rounded-xl border px-3 py-2.5 text-xs font-black transition-all ${
+                      leadForm?.plan === p
+                        ? "border-navy bg-navy/5 text-navy ring-2 ring-gold/20"
+                        : "border-slate-200 bg-slate-50 text-slate-500 hover:bg-white hover:border-slate-300"
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            </div>
             <button onClick={onLeadSubmit} disabled={!valid}
               className="mt-2 w-full rounded-2xl bg-navy py-3.5 text-sm font-black text-white shadow-lg shadow-navy/20 hover:bg-navy-2 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
             >
