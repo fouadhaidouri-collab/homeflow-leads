@@ -167,7 +167,7 @@ function cn(...classes: (string | false | undefined | null)[]) {
 }
 
 // ─── Webhook ──────────────────────────────────────────────────────
-const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxxOqONIj8W94MgIuvdcNvKjrHqJRhn5gxwr-tMqD642nH031ug5mibY7jK_ZBmOzAdsQ/exec"
+const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyjQW6pPnmXxRFMegYvDL6y1cEleer-aBcUgVPTwSKyMVBzF-OaaCW2PD96A4NnZ7kDNg/exec"
 
 async function submitForm(data: Record<string, unknown>) {
   return new Promise<void>((resolve) => {
