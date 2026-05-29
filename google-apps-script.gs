@@ -31,7 +31,7 @@ function doPost(e) {
       sheet = ss.insertSheet(SHEET_NAME);
       sheet.appendRow([
         "Timestamp", "Type", "First Name", "Last Name", "Company",
-        "Email", "Phone", "Services", "Located in US", "Zip Code",
+        "Email", "Phone", "Services", "Plan", "Located in US", "Zip Code",
         "Employees", "Website", "Budget", "Notes", "Message"
       ]);
     }
@@ -48,6 +48,7 @@ function doPost(e) {
         data.email || "",
         data.phone || "",
         (data.services || []).join(", "),
+        data.plan || "",
         data.locatedUS || "",
         data.zip || "",
         data.employees || "",
@@ -64,6 +65,7 @@ function doPost(e) {
         "Email: " + data.email + "\n" +
         "Phone: " + data.phone + "\n" +
         "Services: " + (data.services || []).join(", ") + "\n" +
+        "Plan: " + (data.plan || "N/A") + "\n" +
         "Located in US: " + data.locatedUS + "\n" +
         "Zip: " + data.zip + "\n" +
         "Employees: " + data.employees + "\n" +
