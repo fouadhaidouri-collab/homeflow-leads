@@ -199,20 +199,57 @@ async function submitForm(data: Record<string, unknown>) {
 }
 
 // ─── App ──────────────────────────────────────────────────────────
+function getChatReply(msg: string, firstName: string): string {
+  const q = msg.toLowerCase()
+  if (/pric|cost|pay|\$|how much|plan/.test(q)) {
+    return `Great question, ${firstName}! We have three plans:\n\n• Starter: $10/lead, up to 25/month\n• Growth: $25/lead, up to 100/month\n• Premium: $75/lead, up to 40 high-intent/month\n\nAll plans include our replacement guarantee. Would you like more details on any plan?`
+  }
+  if (/how.?it.?work|process|step/.test(q)) {
+    return `Here's how HomeFlow Leads works in 3 simple steps:\n\n1️⃣ Tell us your service area and what services you offer\n2️⃣ We find & verify qualified customer opportunities\n3️⃣ You receive them weekly and your team follows up\n\nYou only pay for qualified, interested customers. Simple!`
+  }
+  if (/servic|offer|what.*do|provid|hvac|plumb|roof|pest|electr/.test(q)) {
+    return `We cover a wide range of home services: HVAC, Plumbing, Roofing, Pest Control, Electrical, Appliance Repair, Locksmith, Mold Remediation, Water Damage Restoration, and more. If you offer home services, we can help you find customers!`
+  }
+  if (/replace|guarant|refund|wrong.*number|bad.*lead/.test(q)) {
+    return `Absolutely! We have a Replacement Guarantee. Any wrong number, unreachable customer, or contact outside the agreed criteria will be replaced for free. No questions asked.`
+  }
+  if (/area|location|city|where|region/.test(q)) {
+    return `We operate across the United States. Tell us your target cities or areas and we'll find qualified customer opportunities there. The more specific your areas, the better matches we can find!`
+  }
+  if (/contact|talk.*human|real.*person|support/.test(q)) {
+    return `Want to talk to our team directly? Submit an application and we'll reach out. You can also email us and we'll get back to you as soon as possible!`
+  }
+  if (/compet|exclusiv|shared|resell/.test(q)) {
+    return `Unlike shared lead marketplaces, HomeFlow Leads delivers exclusive opportunities. You won't be competing with other companies for the same customer. Each lead is yours alone.`
+  }
+  if (/start|begin|sign.?up|apply/.test(q)) {
+    return `Ready to start? Click "Get Started" on our homepage or fill out the application form. We'll review your info and get you set up with qualified customer opportunities!`
+  }
+  if (/hi|hello|hey|morning|evening/.test(q)) {
+    return `Hey ${firstName}! 👋 How can I help you today? Feel free to ask about our pricing, how it works, or anything about HomeFlow Leads!`
+  }
+  if (/thank|thanks|appreciate/.test(q)) {
+    return `You're welcome, ${firstName}! I'm always here if you have more questions. Feel free to come back anytime! 😊`
+  }
+  return `Thanks for reaching out, ${firstName}! I want to make sure I help you properly. You can ask me about:\n\n💰 Pricing & Plans\n⚙️ How It Works\n🔧 Services We Cover\n✅ Replacement Guarantee\n📍 Service Areas\n🚀 Getting Started\n\nWhat would you like to know?`
+}
+
 export default function HomeFlowLeadsApp() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
+  const [chatMessages, setChatMessages] = useState<{role:"bot"|"user";text:string}[]>([])
+  const [chatInput, setChatInput] = useState("")
+  const chatRef = useRef({name:"",phone:"",email:""})
+  const [chatStep, setChatStep] = useState(-1) // -1=waiting, 0=ask name, 1=ask phone, 2=ask email, 3=free
   const [applyOpen, setApplyOpen] = useState(false)
   const [applyStep, setApplyStep] = useState(1)
   const [scrolled, setScrolled] = useState(false)
-  const [form, setForm] = useState({ name: "", phone: "", email: "", message: "" })
   const [apply, setApply] = useState({
     firstName: "", lastName: "", company: "", email: "", services: [] as string[],
     phone: "", locatedUS: "", zip: "", employees: "", website: "", budget: "", notes: "",
   })
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
-  const [chatSending, setChatSending] = useState(false)
 
   const t = EN
 
@@ -222,7 +259,46 @@ export default function HomeFlowLeadsApp() {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
-  const updateField = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }))
+  const addBotMsg = (text: string) => setChatMessages(m => [...m, {role:"bot",text}])
+  const addUserMsg = (text: string) => setChatMessages(m => [...m, {role:"user",text}])
+
+  const handleChatSend = (text: string) => {
+    const msg = text.trim()
+    if (!msg) return
+    addUserMsg(msg)
+    setChatInput("")
+
+    const c = chatRef.current
+
+    if (chatStep === -1) {
+      setChatStep(0)
+      setTimeout(() => addBotMsg("Great! Let's start. What's your name?"), 400)
+    } else if (chatStep === 0) {
+      c.name = msg
+      setChatStep(1)
+      setTimeout(() => addBotMsg(`Nice to meet you, ${msg.split(" ")[0]}! What's the best phone number to reach you?`), 400)
+    } else if (chatStep === 1) {
+      c.phone = msg
+      setChatStep(2)
+      setTimeout(() => addBotMsg("Thanks! And your email address so we can keep you updated?"), 400)
+    } else if (chatStep === 2) {
+      c.email = msg
+      setChatStep(3)
+      submitForm({ type:"chat", name: c.name, phone: c.phone, email: msg, message: "Chat lead collected" })
+      setTimeout(() => addBotMsg(`Perfect, ${c.name.split(" ")[0]}! Your info has been saved. Now I'm all yours — ask me anything about HomeFlow Leads!`), 400)
+    } else {
+      const reply = getChatReply(msg, c.name.split(" ")[0])
+      setTimeout(() => addBotMsg(reply), 500)
+    }
+  }
+
+  const openChat = () => {
+    setChatOpen(true)
+    if (chatMessages.length === 0) {
+      setTimeout(() => addBotMsg("Hi! 👋 I'm your HomeFlow assistant. Just say **hi** when you're ready and I'll help you get started!"), 300)
+    }
+  }
+
   const updateApply = (field: string, value: string) => setApply(a => ({ ...a, [field]: value }))
   const toggleService = (s: string) => setApply(a => ({
     ...a,
@@ -240,20 +316,6 @@ export default function HomeFlowLeadsApp() {
       setSubmitError("Something went wrong. Please try again.")
     } finally {
       setSubmitting(false)
-    }
-  }
-
-  const handleChatSubmit = async () => {
-    if (!form.name || !form.phone || !form.email) return
-    setChatSending(true)
-    try {
-      await submitForm({ type: "chat", ...form })
-      setForm({ name: "", phone: "", email: "", message: "" })
-      setChatOpen(false)
-    } catch {
-      alert("Something went wrong. Please try again.")
-    } finally {
-      setChatSending(false)
     }
   }
 
@@ -742,17 +804,18 @@ export default function HomeFlowLeadsApp() {
             exit={{ scale: 0, opacity: 0 }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => setChatOpen(true)}
+            onClick={openChat}
             className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-navy text-white shadow-2xl shadow-navy/30 hover:bg-navy-2 transition-colors"
           >
             <MessageCircle size={24} />
+            <span className="absolute top-0.5 right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-sm" />
           </motion.button>
         )}
       </AnimatePresence>
 
       {/* ─── CHAT WIDGET ────────────────────────────────────── */}
       <AnimatePresence>
-        {chatOpen && <ChatWidget t={t} form={form} updateField={updateField} onClose={() => setChatOpen(false)} onSubmit={handleChatSubmit} sending={chatSending} />}
+        {chatOpen && <ChatWidget messages={chatMessages} input={chatInput} onInput={setChatInput} onSend={handleChatSend} onClose={() => setChatOpen(false)} />}
       </AnimatePresence>
 
       {/* ─── APPLICATION MODAL ──────────────────────────────── */}
@@ -792,74 +855,78 @@ function Logo() {
   )
 }
 
-// ─── Lang Toggle ───────────────────────────────────────────────────
 // ─── Chat Widget ───────────────────────────────────────────────────
-function ChatWidget({ t, form, updateField, onClose, onSubmit, sending }: {
-  t: typeof EN
-  form: { name: string; phone: string; email: string; message: string }
-  updateField: (f: string, v: string) => void
+function ChatWidget({ messages, input, onInput, onSend, onClose }: {
+  messages: {role:"bot"|"user";text:string}[]
+  input: string
+  onInput: (v:string) => void
+  onSend: (v:string) => void
   onClose: () => void
-  onSubmit: () => Promise<void>
-  sending: boolean
 }) {
+  const bottomRef = useRef<HTMLDivElement>(null)
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:"smooth" }) }, [messages])
+
+  const handleKey = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(input) }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-      className="fixed bottom-24 right-5 z-50 w-[calc(100vw-2.5rem)] max-w-sm overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-400/20 md:right-8"
+      className="fixed bottom-24 right-5 z-50 flex w-[calc(100vw-2.5rem)] max-w-sm flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-400/20 md:right-8"
+      style={{ height: "520px" }}
     >
       <div className="flex items-center justify-between bg-navy px-5 py-4 text-white">
-        <div>
-          <p className="font-black">{t.chat.title}</p>
-          <p className="text-xs font-medium text-blue-200">{t.chat.subtitle}</p>
+        <div className="flex items-center gap-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-white/15 text-sm font-black">H</div>
+          <div>
+            <p className="text-sm font-black">HomeFlow Assistant</p>
+            <p className="flex items-center gap-1.5 text-[10px] font-medium text-emerald-300">
+              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+              Online
+            </p>
+          </div>
         </div>
         <button onClick={onClose} className="rounded-lg p-1.5 hover:bg-white/10 transition-colors">
           <X size={17} />
         </button>
       </div>
-      <div className="max-h-[480px] overflow-auto p-5">
-        <div className="mb-5 rounded-2xl bg-slate-100 p-4 text-sm font-medium leading-6 text-slate-600">
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-navy text-white text-xs font-black">H</div>
-            <span>{t.chat.message}</span>
+
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div className={`max-w-[85%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 ${
+              m.role === "user"
+                ? "bg-navy text-white rounded-br-md"
+                : "bg-slate-100 text-slate-700 rounded-bl-md"
+            }`}>
+              {m.text}
+            </div>
           </div>
-        </div>
-        <div className="grid gap-3">
-          <ChatInput icon={<User size={16} />} placeholder={t.chat.name} value={form.name} onChange={v => updateField("name", v)} />
-          <ChatInput icon={<PhoneCall size={16} />} placeholder={t.chat.phone} value={form.phone} onChange={v => updateField("phone", v)} />
-          <ChatInput icon={<Mail size={16} />} placeholder={t.chat.email} value={form.email} onChange={v => updateField("email", v)} />
-          <textarea
-            value={form.message}
-            onChange={e => updateField("message", e.target.value)}
-            rows={3}
-            className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white transition-all"
-            placeholder={t.chat.sms}
+        ))}
+        <div ref={bottomRef} />
+      </div>
+
+      <div className="border-t border-slate-200 p-3">
+        <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 focus-within:border-navy/30 focus-within:bg-white transition-all">
+          <input
+            value={input}
+            onChange={e => onInput(e.target.value)}
+            onKeyDown={handleKey}
+            placeholder="Type a message..."
+            className="flex-1 bg-transparent text-sm font-medium outline-none placeholder:text-slate-400"
           />
-          <button onClick={onSubmit} disabled={sending || !form.name || !form.phone || !form.email}
-            className="group flex items-center justify-center gap-2 rounded-2xl bg-navy px-4 py-3.5 text-sm font-black text-white hover:bg-navy-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          <button onClick={() => onSend(input)} disabled={!input.trim()}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-navy text-white hover:bg-navy-2 disabled:opacity-40 transition-all"
           >
-            {sending ? (
-              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-            ) : (
-              <>{t.chat.send} <Send size={16} className="transition-transform group-hover:translate-x-0.5" /></>
-            )}
+            <Send size={14} />
           </button>
         </div>
       </div>
     </motion.div>
-  )
-}
-
-function ChatInput({ icon, placeholder, value, onChange }: {
-  icon: React.ReactNode; placeholder: string; value: string; onChange: (v: string) => void
-}) {
-  return (
-    <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 focus-within:border-navy/30 focus-within:bg-white transition-all">
-      <span className="text-slate-400 shrink-0">{icon}</span>
-      <input value={value} onChange={e => onChange(e.target.value)} className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-slate-400" placeholder={placeholder} />
-    </div>
   )
 }
 
