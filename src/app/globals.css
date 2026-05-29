@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-navy: #0F2B4B;
+  --color-navy-2: #1A3D62;
+  --color-navy-light: #2D5A87;
+  --color-gold: #C9A84C;
+  --color-gold-light: #E4C97A;
+  --color-emerald: #10B981;
+  --color-emerald-light: #34D399;
+  --color-slate-50: #F8FAFC;
+  --color-slate-100: #F1F5F9;
+  --color-slate-200: #E2E8F0;
+  --color-slate-300: #CBD5E1;
+  --color-slate-400: #94A3B8;
+  --color-slate-500: #64748B;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1E293B;
+  --color-slate-900: #0F172A;
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --container-8xl: 100rem;
+}
+
+:root {
+  --background: #FAFBFC;
+  --foreground: #0F172A;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-300) transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 70%;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  background-image: radial-gradient(rgba(203,213,225,0.25) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
