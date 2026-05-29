@@ -246,7 +246,7 @@ export default function HomeFlowLeadsApp() {
   const [scrolled, setScrolled] = useState(false)
   const [apply, setApply] = useState({
     firstName: "", lastName: "", company: "", email: "", services: [] as string[],
-    phone: "", locatedUS: "", zip: "", employees: "", website: "", budget: "", notes: "",
+    phone: "", locatedUS: "", zip: "", employees: "", website: "", budget: "", notes: "", plan: "",
   })
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState("")
@@ -311,7 +311,7 @@ export default function HomeFlowLeadsApp() {
     setSubmitError("")
     try {
       await submitForm({ type: "application", ...apply })
-      setApplyStep(3)
+      setApplyStep(4)
     } catch {
       setSubmitError("Something went wrong. Please try again.")
     } finally {
@@ -960,10 +960,10 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
         <div className="flex items-center justify-between border-b border-slate-200/70 px-6 py-5">
           <div>
             <p className="mb-1.5 text-xs font-black uppercase tracking-[0.15em] text-navy/70">
-              {t.apply.stepLabel} {step}/3
+              {t.apply.stepLabel} {step}/4
             </p>
             <h2 className="text-xl font-black tracking-[-0.03em] text-slate-900 md:text-2xl">
-              {step === 1 ? t.apply.title1 : step === 2 ? t.apply.title2 : t.apply.title3}
+              {step === 1 ? "Choose Your Plan" : step === 2 ? t.apply.title1 : step === 3 ? t.apply.title2 : t.apply.title3}
             </h2>
           </div>
           <button onClick={onClose} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-0 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
@@ -976,7 +976,7 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
           <motion.div
             className="h-full bg-navy"
             initial={{ width: "0%" }}
-            animate={{ width: `${(step / 3) * 100}%` }}
+            animate={{ width: `${((step - 1) / 3) * 100}%` }}
             transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
           />
         </div>
@@ -990,6 +990,59 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
+              >
+                <p className="mb-6 text-sm font-semibold text-slate-500">Choose the plan that fits your needs. You can always upgrade later.</p>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {t.plans.map((plan) => {
+                    const active = apply.plan === plan.name
+                    return (
+                      <button
+                        key={plan.name}
+                        type="button"
+                        onClick={() => updateApply("plan", plan.name)}
+                        className={cn(
+                          "relative rounded-2xl border p-5 text-left transition-all duration-300",
+                          active
+                            ? "border-navy bg-navy/5 ring-2 ring-gold/30 shadow-lg shadow-navy/10"
+                            : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"
+                        )}
+                      >
+                        {plan.featured && (
+                          <div className="absolute -top-2.5 right-3 rounded-full bg-gold px-3 py-0.5 text-[10px] font-black text-navy shadow-sm">
+                            {t.bestChoice}
+                          </div>
+                        )}
+                        <p className="text-lg font-black text-slate-900">{plan.name}</p>
+                        <p className="mt-0.5 text-xs font-medium text-slate-400">{plan.desc}</p>
+                        <p className="mt-4 text-3xl font-black text-navy">{plan.price}</p>
+                        <p className="mt-0.5 text-xs font-medium text-slate-400">/lead</p>
+                        <ul className="mt-4 grid gap-1.5">
+                          {plan.items.map((item: string) => (
+                            <li key={item} className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                              <Check size={12} className="text-emerald shrink-0" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                        {active && (
+                          <div className="mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-navy py-2 text-xs font-black text-white">
+                            <Check size={14} /> Selected
+                          </div>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            )}
+
+            {step === 2 && (
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
                 className="grid gap-4"
               >
                 <div className="grid gap-4 md:grid-cols-2">
@@ -998,6 +1051,7 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                 </div>
                 <Field icon={<Building2 size={16} />} label="Company Name*" value={apply.company} onChange={v => updateApply("company", v)} />
                 <Field icon={<Mail size={16} />} label="Email*" value={apply.email} onChange={v => updateApply("email", v)} />
+                <Field icon={<PhoneCall size={16} />} label="Phone Number*" value={apply.phone} onChange={v => updateApply("phone", v)} prefix="🇺🇸 +1" />
                 <div>
                   <label className="mb-3 block text-sm font-black text-slate-900">What services does your business provide?*</label>
                   <div className="grid gap-2.5 sm:grid-cols-2">
@@ -1038,9 +1092,9 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
               </motion.div>
             )}
 
-            {step === 2 && (
+            {step === 3 && (
               <motion.div
-                key="step2"
+                key="step3"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -1050,7 +1104,6 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                 <div className="rounded-2xl bg-gradient-to-r from-navy/5 to-navy/3 border border-navy/10 p-4 text-sm font-semibold leading-6 text-navy shadow-sm">
                   {t.apply.subtitle2}
                 </div>
-                <Field icon={<PhoneCall size={16} />} label="Phone Number*" value={apply.phone} onChange={v => updateApply("phone", v)} prefix="🇺🇸 +1" />
                 <div>
                   <label className="mb-2 block text-sm font-black text-slate-900">Are you located in the United States?*</label>
                   <div className="grid grid-cols-2 gap-3">
@@ -1083,9 +1136,9 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
               </motion.div>
             )}
 
-            {step === 3 && (
+            {step === 4 && (
               <motion.div
-                key="step3"
+                key="step4"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -1110,7 +1163,7 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
           </AnimatePresence>
         </div>
 
-        {step < 3 && (
+        {step < 4 && (
           <div className="flex items-center justify-between border-t border-slate-200/70 bg-white px-6 py-4">
             <button onClick={() => setStep(Math.max(1, step - 1))}
               className="flex items-center gap-2 rounded-xl border border-slate-200 px-5 py-3 text-sm font-black text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm"
@@ -1122,17 +1175,17 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                 <span className="text-xs font-bold text-red-500 max-w-[200px] text-right">{submitError}</span>
               )}
               <button
-                onClick={step === 2 ? onSubmit : () => setStep(step + 1)}
-                disabled={submitting}
+                onClick={step === 3 ? onSubmit : () => setStep(step + 1)}
+                disabled={submitting || (step === 1 && !apply.plan)}
                 className="flex items-center gap-2 rounded-xl bg-navy px-6 py-3 text-sm font-black text-white shadow-lg shadow-navy/20 hover:bg-navy-2 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {submitting ? (
                   <span className="flex items-center gap-2">
                     <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                    {step === 2 ? (t.apply.stepLabel === "مرحلة" ? "جاري الإرسال..." : "Submitting...") : ""}
+                    Submitting...
                   </span>
                 ) : (
-                  <>{t.apply.next} <ArrowRight size={16} /></>
+                  <>{step === 3 ? "Submit" : t.apply.next} <ArrowRight size={16} /></>
                 )}
               </button>
             </div>
