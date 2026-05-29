@@ -147,117 +147,6 @@ const EN = {
   },
 }
 
-const AR: typeof EN = {
-  login: "تسجيل الدخول",
-  signup: "إنشاء حساب",
-  nav: { how: "كيف نعمل", pricing: "الأسعار", guarantee: "الضمان" },
-  badge: "لشركات خدمات المنازل في الولايات المتحدة",
-  heroTitle: "عملاء مؤهلون وحصريون يُسلمون لكم أسبوعياً.",
-  heroText: "HomeFlow Leads تساعد شركات التكييف والسباكة والأسقف ومكافحة الحشرات على استقبال فرص عملاء محلية مؤهلة.",
-  primaryCta: "ابدأ الآن",
-  secondaryCta: "عرض الأسعار",
-  trust: ["عملاء حصريون", "ضمان التعويض", "تسليم أسبوعي"],
-  cardLabel: "عرض بسيط",
-  cardTitle: "ادفع فقط للعملاء المؤهلين",
-  cardItems: ["داخل منطقة عملك", "مطابق لخدمتك", "لا يباع للمنافسين", "تعويض الأرقام الخاطئة"],
-  howEyebrow: "الطريقة",
-  howTitle: "كيف نعمل",
-  steps: [
-    { title: "أخبرنا بمنطقتك", text: "اختر المدن أو المناطق التي تريد شركتك استقبال عملاء منها.", icon: MapPin },
-    { title: "اختر خدماتك", text: "أخبرنا بالخدمات التي تقدمها مثل التكييف، السباكة، الأسقف، مكافحة الحشرات، أو ترميم الأضرار.", icon: Building2 },
-    { title: "نجد فرص عملاء مؤهلين", text: "نبحث عن عملاء محتملين يناسبون منطقة خدمتك وفئة خدماتك.", icon: Users },
-    { title: "نراجع كل عميل", text: "قبل التسليم نتحقق من معلومات الاتصال، مطابقة الخدمة، الموقع، ومستوى الاهتمام.", icon: CheckCircle2 },
-    { title: "تسليم أسبوعي", text: "تستلم فرص عملاء منظمة في دفعات أسبوعية.", icon: Clock },
-    { title: "فريقك يقوم بالاتصال", text: "فريقك يتصل بالعملاء مباشرة، يقدم عروض الأسعار، ويحجز المواعيد.", icon: PhoneCall },
-    { title: "ادفع فقط للعملاء المؤهلين", text: "تدفع فقط للعملاء الذين يطابقون المعايير المتفق عليها ويظهرون اهتماماً حقيقياً.", icon: DollarSign },
-    { title: "ضمان التعويض", text: "أي رقم خاطئ أو عميل غير قابل للوصول أو خارج المعايير يتم تعويضه مجاناً.", icon: RefreshCw },
-  ],
-  testimonialsEyebrow: "الشهادات",
-  testimonialsTitle: "آراء حقيقية من شركات خدمات منزلية",
-  testimonialsText: "فرص عملاء بسيطة، موصلة بوضوح، مع حماية التعويض عندما تكون جهات الاتصال غير صالحة أو خارج المعايير المتفق عليها.",
-  testimonials: [
-    {
-      name: "Michael Turner",
-      role: "مالك، Turner HVAC Services",
-      type: "شركة تكييف",
-      rating: 4,
-      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face",
-      text: "قبل HomeFlow Leads كان فريقنا يقضي وقتاً طويلاً في البحث عن العملاء يدوياً. الآن نستلم فرص عملاء مؤهلين منظمة كل أسبوع، وفريق المبيعات يركز على الاتصال والعرض والإغلاق.",
-      before: "البحث عن العملاء يدوياً.",
-      after: "فرص عملاء مؤهلين أسبوعياً.",
-    },
-    {
-      name: "Sarah Mitchell",
-      role: "مديرة العمليات، ClearRoof Pros",
-      type: "شركة أسقف",
-      rating: 4,
-      avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face",
-      text: "أكبر فرق كان الوضوح. نعرف بالضبط وش كندفعو، ونعرفو أن العملاء حصريين، وأي جهة اتصال غير صالحة كاتعوض. هاد الشي رتب عملية متابعة العملاء عندنا.",
-      before: "فرص عملاء غير واضحة ومضيعة للوقت.",
-      after: "فرص عملاء حصرية مع ضمان التعويض.",
-    },
-    {
-      name: "Daniel Brooks",
-      role: "مؤسس، Brooks Plumbing & Drain",
-      type: "شركة سباكة",
-      rating: 4,
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-      text: "ماكنا حابين منصة مشتركة أخرى. HomeFlow Leads عطاتنا نموذج أبسط: دفع لكل عميل مؤهل، دفعات أسبوعية، ومعايير واضحة. ساعد فريقنا يركز على محادثات حقيقية بدلاً من بيانات عشوائية.",
-      before: "جهات اتصال عشوائية ومنصات مشتركة.",
-      after: "عملاء مؤهلين مطابقين لمنطقة الخدمة ونوعها.",
-    },
-  ],
-  pricingEyebrow: "الأسعار",
-  pricingTitle: "ادفع لكل عميل مؤهل",
-  pricingText: "بدون عقود معقدة. ابدأ بتجربة صغيرة ثم وسع.",
-  bestChoice: "الأفضل",
-  plans: [
-    { name: "Starter", desc: "للتجربة", price: "$10", total: "$250/شهر", items: ["لكل عميل مؤهل", "حتى 25 شهرياً", "رقم صحيح", "تعويض الأرقام الخاطئة"], featured: false },
-    { name: "Growth", desc: "للنمو", price: "$25", total: "$2,500/شهر", items: ["لكل عميل حصري", "حتى 100 شهرياً", "تسليم أسبوعي", "لا يباع للمنافسين", "دعم أولوي"], featured: true },
-    { name: "Premium", desc: "لاهتمام أعلى", price: "$75", total: "$3,000/شهر", items: ["لكل عميل عالي الاهتمام", "حتى 40 شهرياً", "تسليم فوري", "تحقق أقوى", "مدير حساب"], featured: false },
-  ],
-  guaranteeEyebrow: "الشفافية",
-  guaranteeTitle: "قواعد واضحة بدون وعود غامضة.",
-  guaranteeText: "نوفر فرص عملاء مؤهلة. لا نضمن الصفقات المغلقة لأن النتيجة تعتمد على سرعة متابعتك وجودة عرضك.",
-  replaceTitle: "ضمان التعويض",
-  replaceText: "أي رقم خاطئ أو عميل خارج المعايير يتم تعويضه مجاناً.",
-  noClosingTitle: "لا تدفع مقابل الصفقات المغلقة",
-  noClosingText: "تدفع فقط للعملاء المؤهلين المهتمين، ليس للمبيعات النهائية.",
-  chat: {
-    title: "تواصل سريع",
-    subtitle: "نرد في أقرب وقت",
-    message: "مرحباً! أخبرنا أين تعمل شركتك وأي نوع عملاء تحتاج.",
-    name: "الاسم",
-    phone: "رقم الهاتف",
-    email: "البريد الإلكتروني",
-    sms: "الرسالة / منطقة العمل / نوع الخدمة",
-    send: "إرسال الطلب",
-  },
-  apply: {
-    stepLabel: "مرحلة",
-    title1: "قدم طلبك لتصبح شريكاً",
-    title2: "أخبرنا عن نشاطك التجاري",
-    subtitle2: "هذه المعلومات تساعدنا على فهم منطقتك وقدرتك على النمو.",
-    title3: "تم الاستلام!",
-    thanks: "شكراً على طلبك!",
-    thanksText: "سيراجع فريقنا طلبك ويتواصل معك إذا كنت مناسباً.",
-    prev: "السابق",
-    next: "التالي",
-    close: "إغلاق",
-  },
-  stats: [
-    { value: "2M+", label: "عميل تم تسليمهم", icon: TrendingUp },
-    { value: "500+", label: "شركة شريكة", icon: Building2 },
-    { value: "40-60%", label: "نسبة الاتصال", icon: Zap },
-    { value: "4.9/5", label: "تقييم العملاء", icon: Star },
-  ],
-  footer: {
-    rights: "© 2026 HomeFlow Leads. جميع الحقوق محفوظة.",
-    privacy: "سياسة الخصوصية",
-    terms: "شروط الخدمة",
-  },
-}
-
 // ─── Helpers ──────────────────────────────────────────────────────
 const services = [
   { name: "Appliance Repair", icon: Wrench },
@@ -311,7 +200,6 @@ async function submitForm(data: Record<string, unknown>) {
 
 // ─── App ──────────────────────────────────────────────────────────
 export default function HomeFlowLeadsApp() {
-  const [lang, setLang] = useState<"en" | "ar">("en")
   const [menuOpen, setMenuOpen] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
   const [applyOpen, setApplyOpen] = useState(false)
@@ -326,19 +214,13 @@ export default function HomeFlowLeadsApp() {
   const [submitError, setSubmitError] = useState("")
   const [chatSending, setChatSending] = useState(false)
 
-  const isAr = lang === "ar"
-  const t = isAr ? AR : EN
+  const t = EN
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
-
-  useEffect(() => {
-    document.documentElement.dir = isAr ? "rtl" : "ltr"
-    document.documentElement.lang = lang
-  }, [lang])
 
   const updateField = (field: string, value: string) => setForm(f => ({ ...f, [field]: value }))
   const updateApply = (field: string, value: string) => setApply(a => ({ ...a, [field]: value }))
@@ -355,7 +237,7 @@ export default function HomeFlowLeadsApp() {
       await submitForm({ type: "application", ...apply })
       setApplyStep(3)
     } catch {
-      setSubmitError(isAr ? "حدث خطأ. حاول مرة أخرى." : "Something went wrong. Please try again.")
+      setSubmitError("Something went wrong. Please try again.")
     } finally {
       setSubmitting(false)
     }
@@ -369,7 +251,7 @@ export default function HomeFlowLeadsApp() {
       setForm({ name: "", phone: "", email: "", message: "" })
       setChatOpen(false)
     } catch {
-      alert(isAr ? "حدث خطأ. حاول مرة أخرى." : "Something went wrong. Please try again.")
+      alert("Something went wrong. Please try again.")
     } finally {
       setChatSending(false)
     }
@@ -400,10 +282,6 @@ export default function HomeFlowLeadsApp() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 md:flex">
-<LangToggle lang={lang} setLang={setLang} />
-          </div>
-
           <button onClick={() => setMenuOpen(!menuOpen)} className="rounded-xl border border-slate-200 p-2.5 md:hidden hover:bg-slate-50 transition-colors">
             {menuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -421,7 +299,6 @@ export default function HomeFlowLeadsApp() {
                 {(["how", "pricing", "guarantee"] as const).map(key => (
                   <a key={key} href={`#${key}`} onClick={() => setMenuOpen(false)} className="py-2 text-slate-700 hover:text-navy transition-colors">{t.nav[key]}</a>
                 ))}
-                <LangToggle lang={lang} setLang={setLang} />
               </div>
             </motion.div>
           )}
@@ -733,7 +610,7 @@ export default function HomeFlowLeadsApp() {
                     </div>
                     <div className="mt-2 flex items-baseline gap-1">
                       <span className="text-lg font-bold text-gold">{plan.total}</span>
-                      <span className="text-xs font-medium text-slate-400">{isAr ? "إجمالي شهري" : "total monthly"}</span>
+                      <span className="text-xs font-medium text-slate-400">total monthly</span>
                     </div>
                     <ul className="mt-8 grid gap-3 text-sm font-medium text-slate-600">
                       {plan.items.map(item => (
@@ -916,17 +793,6 @@ function Logo() {
 }
 
 // ─── Lang Toggle ───────────────────────────────────────────────────
-function LangToggle({ lang, setLang }: { lang: "en" | "ar"; setLang: (l: "en" | "ar") => void }) {
-  return (
-    <button
-      onClick={() => setLang(lang === "en" ? "ar" : "en")}
-      className="rounded-xl border border-slate-200 px-3.5 py-2 text-xs font-black text-slate-600 hover:bg-slate-50 transition-colors"
-    >
-      {lang === "en" ? "العربية" : "English"}
-    </button>
-  )
-}
-
 // ─── Chat Widget ───────────────────────────────────────────────────
 function ChatWidget({ t, form, updateField, onClose, onSubmit, sending }: {
   t: typeof EN
