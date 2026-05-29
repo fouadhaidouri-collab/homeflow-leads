@@ -240,7 +240,8 @@ export default function HomeFlowLeadsApp() {
   const [chatMessages, setChatMessages] = useState<{role:"bot"|"user";text:string}[]>([])
   const [chatInput, setChatInput] = useState("")
   const chatRef = useRef({name:"",phone:"",email:""})
-  const [chatStep, setChatStep] = useState(-1) // -1=waiting, 0=ask name, 1=ask phone, 2=ask email, 3=free
+  const [chatStep, setChatStep] = useState(-1) // -1=waiting, 0=lead form, 3=free
+  const [leadForm, setLeadForm] = useState({ name:"", phone:"", email:"" })
   const [applyOpen, setApplyOpen] = useState(false)
   const [applyStep, setApplyStep] = useState(1)
   const [scrolled, setScrolled] = useState(false)
@@ -269,33 +270,24 @@ export default function HomeFlowLeadsApp() {
     setChatInput("")
 
     const c = chatRef.current
+    const reply = getChatReply(msg, c.name.split(" ")[0] || "there")
+    setTimeout(() => addBotMsg(reply), 500)
+  }
 
-    if (chatStep === -1) {
-      setChatStep(0)
-      setTimeout(() => addBotMsg("Great! Let's start. What's your name?"), 400)
-    } else if (chatStep === 0) {
-      c.name = msg
-      setChatStep(1)
-      setTimeout(() => addBotMsg(`Nice to meet you, ${msg.split(" ")[0]}! What's the best phone number to reach you?`), 400)
-    } else if (chatStep === 1) {
-      c.phone = msg
-      setChatStep(2)
-      setTimeout(() => addBotMsg("Thanks! And your email address so we can keep you updated?"), 400)
-    } else if (chatStep === 2) {
-      c.email = msg
-      setChatStep(3)
-      submitForm({ type:"chat", name: c.name, phone: c.phone, email: msg, message: "Chat lead collected" })
-      setTimeout(() => addBotMsg(`Perfect, ${c.name.split(" ")[0]}! Your info has been saved. Now I'm all yours — ask me anything about HomeFlow Leads!`), 400)
-    } else {
-      const reply = getChatReply(msg, c.name.split(" ")[0])
-      setTimeout(() => addBotMsg(reply), 500)
-    }
+  const handleLeadSubmit = () => {
+    const { name, phone, email } = leadForm
+    if (!name.trim() || !phone.trim() || !email.trim()) return
+    chatRef.current = { name, phone, email }
+    submitForm({ type:"chat", name, phone, email, message:"Chat lead captured" })
+    setChatStep(3)
+    addBotMsg(`Thanks, ${name.split(" ")[0]}! I'm here to answer any questions about HomeFlow Leads. What would you like to know?`)
   }
 
   const openChat = () => {
     setChatOpen(true)
     if (chatMessages.length === 0) {
-      setTimeout(() => addBotMsg("Hi! 👋 I'm your HomeFlow assistant. Just say **hi** when you're ready and I'll help you get started!"), 300)
+      setChatStep(0)
+      setLeadForm({ name:"", phone:"", email:"" })
     }
   }
 
@@ -815,7 +807,7 @@ export default function HomeFlowLeadsApp() {
 
       {/* ─── CHAT WIDGET ────────────────────────────────────── */}
       <AnimatePresence>
-        {chatOpen && <ChatWidget messages={chatMessages} input={chatInput} onInput={setChatInput} onSend={handleChatSend} onClose={() => setChatOpen(false)} />}
+        {chatOpen && <ChatWidget messages={chatMessages} input={chatInput} onInput={setChatInput} onSend={handleChatSend} onClose={() => setChatOpen(false)} showLeadForm={chatStep === 0} leadForm={leadForm} setLeadForm={setLeadForm} onLeadSubmit={handleLeadSubmit} />}
       </AnimatePresence>
 
       {/* ─── APPLICATION MODAL ──────────────────────────────── */}
@@ -856,12 +848,16 @@ function Logo() {
 }
 
 // ─── Chat Widget ───────────────────────────────────────────────────
-function ChatWidget({ messages, input, onInput, onSend, onClose }: {
+function ChatWidget({ messages, input, onInput, onSend, onClose, showLeadForm, leadForm, setLeadForm, onLeadSubmit }: {
   messages: {role:"bot"|"user";text:string}[]
   input: string
   onInput: (v:string) => void
   onSend: (v:string) => void
   onClose: () => void
+  showLeadForm?: boolean
+  leadForm?: { name:string; phone:string; email:string }
+  setLeadForm?: (v:{name:string;phone:string;email:string}) => void
+  onLeadSubmit?: () => void
 }) {
   const bottomRef = useRef<HTMLDivElement>(null)
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:"smooth" }) }, [messages])
@@ -869,6 +865,8 @@ function ChatWidget({ messages, input, onInput, onSend, onClose }: {
   const handleKey = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(input) }
   }
+
+  const valid = leadForm && leadForm.name.trim() && leadForm.phone.trim() && leadForm.email.trim()
 
   return (
     <motion.div
@@ -895,37 +893,65 @@ function ChatWidget({ messages, input, onInput, onSend, onClose }: {
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-        {messages.map((m, i) => (
-          <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[85%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 ${
-              m.role === "user"
-                ? "bg-navy text-white rounded-br-md"
-                : "bg-slate-100 text-slate-700 rounded-bl-md"
-            }`}>
-              {m.text}
+      {showLeadForm ? (
+        <div className="flex flex-1 flex-col justify-center px-6 py-6">
+          <div className="mb-6 text-center">
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-navy/10 text-navy">
+              <MessageCircle size={22} />
+            </div>
+            <h3 className="text-lg font-black text-slate-900">Let's Get Started</h3>
+            <p className="mt-1 text-xs font-semibold text-slate-500">Enter your details to start chatting</p>
+          </div>
+          <div className="grid gap-3">
+            <input value={leadForm?.name||""} onChange={e => setLeadForm?.({ ...leadForm!, name:e.target.value })} placeholder="Your Name *"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
+            <input value={leadForm?.phone||""} onChange={e => setLeadForm?.({ ...leadForm!, phone:e.target.value })} placeholder="Phone Number *"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
+            <input value={leadForm?.email||""} onChange={e => setLeadForm?.({ ...leadForm!, email:e.target.value })} placeholder="Email Address *"
+              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
+            <button onClick={onLeadSubmit} disabled={!valid}
+              className="mt-2 w-full rounded-2xl bg-navy py-3.5 text-sm font-black text-white shadow-lg shadow-navy/20 hover:bg-navy-2 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+            >
+              Start Chatting
+            </button>
+          </div>
+          <p className="mt-4 text-center text-[10px] font-medium text-slate-400">Your info won't be shared with third parties</p>
+        </div>
+      ) : (
+        <>
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+            {messages.map((m, i) => (
+              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[85%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 ${
+                  m.role === "user"
+                    ? "bg-navy text-white rounded-br-md"
+                    : "bg-slate-100 text-slate-700 rounded-bl-md"
+                }`}>
+                  {m.text}
+                </div>
+              </div>
+            ))}
+            <div ref={bottomRef} />
+          </div>
+
+          <div className="border-t border-slate-200 p-3">
+            <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 focus-within:border-navy/30 focus-within:bg-white transition-all">
+              <input
+                value={input}
+                onChange={e => onInput(e.target.value)}
+                onKeyDown={handleKey}
+                placeholder="Type a message..."
+                className="flex-1 bg-transparent text-sm font-medium outline-none placeholder:text-slate-400"
+              />
+              <button onClick={() => onSend(input)} disabled={!input.trim()}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-navy text-white hover:bg-navy-2 disabled:opacity-40 transition-all"
+              >
+                <Send size={14} />
+              </button>
             </div>
           </div>
-        ))}
-        <div ref={bottomRef} />
-      </div>
-
-      <div className="border-t border-slate-200 p-3">
-        <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 focus-within:border-navy/30 focus-within:bg-white transition-all">
-          <input
-            value={input}
-            onChange={e => onInput(e.target.value)}
-            onKeyDown={handleKey}
-            placeholder="Type a message..."
-            className="flex-1 bg-transparent text-sm font-medium outline-none placeholder:text-slate-400"
-          />
-          <button onClick={() => onSend(input)} disabled={!input.trim()}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-navy text-white hover:bg-navy-2 disabled:opacity-40 transition-all"
-          >
-            <Send size={14} />
-          </button>
-        </div>
-      </div>
+        </>
+      )}
     </motion.div>
   )
 }
@@ -963,7 +989,7 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
               {t.apply.stepLabel} {step}/4
             </p>
             <h2 className="text-xl font-black tracking-[-0.03em] text-slate-900 md:text-2xl">
-              {step === 1 ? "Choose Your Plan" : step === 2 ? t.apply.title1 : step === 3 ? t.apply.title2 : t.apply.title3}
+              {step === 1 ? t.apply.title1 : step === 2 ? t.apply.title2 : step === 3 ? "Choose Your Plan" : t.apply.title3}
             </h2>
           </div>
           <button onClick={onClose} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-0 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
@@ -986,59 +1012,6 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
             {step === 1 && (
               <motion.div
                 key="step1"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <p className="mb-6 text-sm font-semibold text-slate-500">Choose the plan that fits your needs. You can always upgrade later.</p>
-                <div className="grid gap-4 md:grid-cols-3">
-                  {t.plans.map((plan) => {
-                    const active = apply.plan === plan.name
-                    return (
-                      <button
-                        key={plan.name}
-                        type="button"
-                        onClick={() => updateApply("plan", plan.name)}
-                        className={cn(
-                          "relative rounded-2xl border p-5 text-left transition-all duration-300",
-                          active
-                            ? "border-navy bg-navy/5 ring-2 ring-gold/30 shadow-lg shadow-navy/10"
-                            : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"
-                        )}
-                      >
-                        {plan.featured && (
-                          <div className="absolute -top-2.5 right-3 rounded-full bg-gold px-3 py-0.5 text-[10px] font-black text-navy shadow-sm">
-                            {t.bestChoice}
-                          </div>
-                        )}
-                        <p className="text-lg font-black text-slate-900">{plan.name}</p>
-                        <p className="mt-0.5 text-xs font-medium text-slate-400">{plan.desc}</p>
-                        <p className="mt-4 text-3xl font-black text-navy">{plan.price}</p>
-                        <p className="mt-0.5 text-xs font-medium text-slate-400">/lead</p>
-                        <ul className="mt-4 grid gap-1.5">
-                          {plan.items.map((item: string) => (
-                            <li key={item} className="flex items-center gap-2 text-xs font-semibold text-slate-600">
-                              <Check size={12} className="text-emerald shrink-0" />
-                              {item}
-                            </li>
-                          ))}
-                        </ul>
-                        {active && (
-                          <div className="mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-navy py-2 text-xs font-black text-white">
-                            <Check size={14} /> Selected
-                          </div>
-                        )}
-                      </button>
-                    )
-                  })}
-                </div>
-              </motion.div>
-            )}
-
-            {step === 2 && (
-              <motion.div
-                key="step2"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -1092,9 +1065,9 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
               </motion.div>
             )}
 
-            {step === 3 && (
+            {step === 2 && (
               <motion.div
-                key="step3"
+                key="step2"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
@@ -1133,6 +1106,59 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                       placeholder="Service area, lead goals, or team capacity..."
                     />
                   </div>
+              </motion.div>
+            )}
+
+            {step === 3 && (
+              <motion.div
+                key="step3"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <p className="mb-6 text-sm font-semibold text-slate-500">Choose the plan that fits your needs. You can always upgrade later.</p>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {t.plans.map((plan) => {
+                    const active = apply.plan === plan.name
+                    return (
+                      <button
+                        key={plan.name}
+                        type="button"
+                        onClick={() => updateApply("plan", plan.name)}
+                        className={cn(
+                          "relative rounded-2xl border p-5 text-left transition-all duration-300",
+                          active
+                            ? "border-navy bg-navy/5 ring-2 ring-gold/30 shadow-lg shadow-navy/10"
+                            : "border-slate-200 bg-white hover:border-slate-300 hover:shadow-md"
+                        )}
+                      >
+                        {plan.featured && (
+                          <div className="absolute -top-2.5 right-3 rounded-full bg-gold px-3 py-0.5 text-[10px] font-black text-navy shadow-sm">
+                            {t.bestChoice}
+                          </div>
+                        )}
+                        <p className="text-lg font-black text-slate-900">{plan.name}</p>
+                        <p className="mt-0.5 text-xs font-medium text-slate-400">{plan.desc}</p>
+                        <p className="mt-4 text-3xl font-black text-navy">{plan.price}</p>
+                        <p className="mt-0.5 text-xs font-medium text-slate-400">/lead</p>
+                        <ul className="mt-4 grid gap-1.5">
+                          {plan.items.map((item: string) => (
+                            <li key={item} className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                              <Check size={12} className="text-emerald shrink-0" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                        {active && (
+                          <div className="mt-4 flex items-center justify-center gap-1.5 rounded-xl bg-navy py-2 text-xs font-black text-white">
+                            <Check size={14} /> Selected
+                          </div>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
               </motion.div>
             )}
 
@@ -1176,7 +1202,7 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
               )}
               <button
                 onClick={step === 3 ? onSubmit : () => setStep(step + 1)}
-                disabled={submitting || (step === 1 && !apply.plan)}
+                disabled={submitting || (step === 1 && (!apply.firstName || !apply.lastName || !apply.company || !apply.email || !apply.phone || apply.services.length === 0)) || (step === 2 && (!apply.locatedUS || !apply.zip || !apply.employees || !apply.website || !apply.budget)) || (step === 3 && !apply.plan)}
                 className="flex items-center gap-2 rounded-xl bg-navy px-6 py-3 text-sm font-black text-white shadow-lg shadow-navy/20 hover:bg-navy-2 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {submitting ? (
