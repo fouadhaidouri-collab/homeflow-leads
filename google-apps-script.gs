@@ -92,7 +92,7 @@ function doPost(e) {
         data.email || "",
         data.phone || "",
         "",
-        data.plan || "",
+        "",
         "",
         "",
         "",
