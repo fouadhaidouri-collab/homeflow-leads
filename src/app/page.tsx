@@ -41,14 +41,14 @@ const EN = {
   signup: "Sign Up",
   nav: { how: "How It Works", pricing: "Pricing", guarantee: "Guarantee" },
   badge: "For Home Service Companies Across The United States",
-  heroTitle: "Exclusive qualified homeowner opportunities delivered weekly.",
-  heroText: "HomeFlow Leads helps HVAC, plumbing, roofing, pest control, and home service companies receive qualified local customer opportunities without shared lead marketplaces.",
+  heroTitle: "Exclusive qualified home service leads delivered weekly.",
+  heroText: "HomeFlow Leads helps HVAC, plumbing, roofing, pest control, and home service companies receive qualified local leads without shared lead marketplaces.",
   primaryCta: "Get Started",
   secondaryCta: "View Pricing",
   trust: ["Exclusive customers", "Replacement guarantee", "Weekly delivery"],
-  cardLabel: "Simple Offer",
-  cardTitle: "Pay only for qualified customers",
-  cardItems: ["Inside your service area", "Matched to your service", "Not resold to competitors", "Wrong contacts replaced free"],
+  cardLabel: "Simple & Transparent",
+  cardTitle: "Pay only for qualified leads",
+  cardItems: ["In your service area", "Matched to your service", "Not resold to competitors", "Wrong contacts replaced for free"],
   howEyebrow: "PROCESS",
   howTitle: "How It Works",
   steps: [
@@ -57,13 +57,13 @@ const EN = {
     { title: "We Find Qualified Customer Opportunities", text: "We search for potential customers who match your service area and service category.", icon: Users },
     { title: "We Review Every Customer", text: "Before delivery, we check contact information, service match, location match, and interest level.", icon: CheckCircle2 },
     { title: "Weekly Delivery", text: "You receive organized customer opportunities in weekly batches.", icon: Clock },
-    { title: "Your Team Makes The Call", text: "Your team contacts the customers directly, gives estimates, schedules appointments, and closes the job.", icon: PhoneCall },
-    { title: "Pay Only For Qualified Customers", text: "You only pay for customers who match the agreed criteria and show real interest.", icon: DollarSign },
+    { title: "Your Team Makes the Call", text: "Your team contacts the customers directly, gives estimates, schedules appointments, and closes the job.", icon: PhoneCall },
+    { title: "Pay Only for Qualified Leads", text: "You only pay for leads who match the agreed criteria and show real interest.", icon: DollarSign },
     { title: "Replacement Guarantee", text: "Any wrong number, unreachable customer, or customer outside the agreed criteria will be replaced for free.", icon: RefreshCw },
   ],
   testimonialsEyebrow: "TESTIMONIALS",
   testimonialsTitle: "Real Feedback From Home Service Companies",
-  testimonialsText: "Simple customer opportunities, delivered clearly, with replacement protection when contacts are invalid or outside the agreed criteria.",
+  testimonialsText: "Simple and clear lead delivery, with replacement protection when contacts are invalid or outside the agreed criteria.",
   testimonials: [
     {
       name: "Michael Turner",
@@ -71,9 +71,9 @@ const EN = {
       type: "HVAC Company",
       rating: 4,
       avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&h=200&fit=crop&crop=face",
-      text: "Before HomeFlow Leads, our team was spending too much time looking for potential customers manually. Now we receive organized qualified customer opportunities every week, and our sales team can focus on calling, quoting, and closing.",
+      text: "Before HomeFlow Leads, our team was spending too much time looking for potential customers manually. Now we receive organized qualified lead opportunities every week, and our sales team can focus on calling, quoting, and closing.",
       before: "Searching manually for customers.",
-      after: "Weekly qualified customer opportunities delivered.",
+      after: "Weekly qualified lead opportunities delivered.",
     },
     {
       name: "Sarah Mitchell",
@@ -81,9 +81,9 @@ const EN = {
       type: "Roofing Company",
       rating: 4,
       avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face",
-      text: "The biggest difference for us was clarity. We know what we are paying for, we know which customers are exclusive, and invalid contacts are replaced. It made our lead follow-up process more organized.",
+      text: "The biggest difference for us was clarity. We know what we are paying for, we know which leads are exclusive, and invalid contacts are replaced. It made our lead follow-up process more organized.",
       before: "Unclear shared leads and wasted follow-up time.",
-      after: "Exclusive customer opportunities with replacement protection.",
+      after: "Exclusive lead opportunities with replacement protection.",
     },
     {
       name: "Daniel Brooks",
@@ -91,13 +91,13 @@ const EN = {
       type: "Plumbing Company",
       rating: 4,
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face",
-      text: "We did not want another shared lead platform. HomeFlow Leads gave us a simpler model: pay per qualified customer, weekly batches, and clear criteria. It helped our team focus on real conversations instead of random data.",
+      text: "We did not want another shared lead platform. HomeFlow Leads gave us a simpler model: pay per qualified lead, weekly batches, and clear criteria. It helped our team focus on real conversations instead of random data.",
       before: "Random contacts and shared lead platforms.",
-      after: "Qualified customers matched to service area and service type.",
+      after: "Qualified leads matched to service area and service type.",
     },
   ],
   pricingEyebrow: "PRICING",
-  pricingTitle: "Pay Per Qualified Customer",
+  pricingTitle: "Pay Per Qualified Lead",
   pricingText: "No complicated contracts. Start small, test quality, then scale when results make sense.",
   bestChoice: "Best Choice",
   plans: [
@@ -107,11 +107,11 @@ const EN = {
   ],
   guaranteeEyebrow: "TRANSPARENCY",
   guaranteeTitle: "Clear rules. No hidden promises.",
-  guaranteeText: "We provide qualified customer opportunities. We don't guarantee closed sales — the final result depends on your follow-up speed, offer quality, and sales process.",
+  guaranteeText: "We provide qualified lead opportunities. We don't guarantee closed sales — the final result depends on your follow-up speed, offer quality, and sales process.",
   replaceTitle: "Replacement Guarantee",
   replaceText: "Any wrong number, unreachable contact, or customer outside agreed criteria is replaced for free.",
   noClosingTitle: "You don't pay for closed deals",
-  noClosingText: "You pay only for qualified, interested customers, not for final sales or revenue outcomes.",
+  noClosingText: "You pay only for qualified, interested leads, not for final sales or revenue outcomes.",
   chat: {
     title: "Quick Qualification",
     subtitle: "We reply as soon as possible",
@@ -206,7 +206,7 @@ function getChatReply(msg: string, firstName: string): string {
     return `Great question, ${firstName}! We have three plans:\n\n• Starter: $10/lead, up to 25/month\n• Growth: $25/lead, up to 100/month\n• Premium: $75/lead, up to 40 high-intent/month\n\nAll plans include our replacement guarantee. Would you like more details on any plan?`
   }
   if (/how.?it.?work|process|step/.test(q)) {
-    return `Here's how HomeFlow Leads works in 3 simple steps:\n\n1️⃣ Tell us your service area and what services you offer\n2️⃣ We find & verify qualified customer opportunities\n3️⃣ You receive them weekly and your team follows up\n\nYou only pay for qualified, interested customers. Simple!`
+    return `Here's how HomeFlow Leads works in 3 simple steps:\n\n1️⃣ Tell us your service area and what services you offer\n2️⃣ We find & verify qualified lead opportunities\n3️⃣ You receive them weekly and your team follows up\n\nYou only pay for qualified, interested leads. Simple!`
   }
   if (/servic|offer|what.*do|provid|hvac|plumb|roof|pest|electr/.test(q)) {
     return `We cover a wide range of home services: HVAC, Plumbing, Roofing, Pest Control, Electrical, Appliance Repair, Locksmith, Mold Remediation, Water Damage Restoration, and more. If you offer home services, we can help you find customers!`
@@ -909,11 +909,11 @@ function ChatWidget({ messages, input, onInput, onSend, onClose, showLeadForm, l
             <p className="mt-1 text-xs font-semibold text-slate-500">Enter your details to start chatting</p>
           </div>
           <div className="grid gap-3">
-            <input value={leadForm?.name||""} onChange={e => setLeadForm?.({ ...leadForm!, name:e.target.value })} placeholder="Your Name *"
+            <input value={leadForm?.name||""} onChange={e => setLeadForm?.({ ...leadForm!, name:e.target.value })} placeholder="Your Name *" autoComplete="name"
               className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
-            <input value={leadForm?.phone||""} onChange={e => setLeadForm?.({ ...leadForm!, phone:e.target.value })} placeholder="Phone Number *"
+            <input value={leadForm?.phone||""} onChange={e => setLeadForm?.({ ...leadForm!, phone:e.target.value })} placeholder="Phone Number *" autoComplete="tel" inputMode="tel"
               className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
-            <input value={leadForm?.email||""} onChange={e => setLeadForm?.({ ...leadForm!, email:e.target.value })} placeholder="Email Address *"
+            <input value={leadForm?.email||""} onChange={e => setLeadForm?.({ ...leadForm!, email:e.target.value })} placeholder="Email Address *" autoComplete="email" inputMode="email"
               className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
             <button onClick={onLeadSubmit} disabled={!valid}
               className="mt-2 w-full rounded-2xl bg-navy py-3.5 text-sm font-black text-white shadow-lg shadow-navy/20 hover:bg-navy-2 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
@@ -1025,12 +1025,12 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                 className="grid gap-4"
               >
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field icon={<User size={16} />} label="First Name*" value={apply.firstName} onChange={v => updateApply("firstName", v)} />
-                  <Field icon={<User size={16} />} label="Last Name*" value={apply.lastName} onChange={v => updateApply("lastName", v)} />
+                  <Field icon={<User size={16} />} label="First Name*" value={apply.firstName} onChange={v => updateApply("firstName", v)} autoComplete="given-name" />
+                  <Field icon={<User size={16} />} label="Last Name*" value={apply.lastName} onChange={v => updateApply("lastName", v)} autoComplete="family-name" />
                 </div>
-                <Field icon={<Building2 size={16} />} label="Company Name*" value={apply.company} onChange={v => updateApply("company", v)} />
-                <Field icon={<Mail size={16} />} label="Email*" value={apply.email} onChange={v => updateApply("email", v)} />
-                <Field icon={<PhoneCall size={16} />} label="Phone Number*" value={apply.phone} onChange={v => updateApply("phone", v)} prefix="🇺🇸 +1" />
+                <Field icon={<Building2 size={16} />} label="Company Name*" value={apply.company} onChange={v => updateApply("company", v)} autoComplete="organization" />
+                <Field icon={<Mail size={16} />} label="Email*" value={apply.email} onChange={v => updateApply("email", v)} autoComplete="email" inputMode="email" />
+                <Field icon={<PhoneCall size={16} />} label="Phone Number*" value={apply.phone} onChange={v => updateApply("phone", v)} prefix="🇺🇸 +1" autoComplete="tel" inputMode="tel" />
                 <div>
                   <label className="mb-3 block text-sm font-black text-slate-900">What services does your business provide?*</label>
                   <div className="grid gap-2.5 sm:grid-cols-2">
@@ -1100,11 +1100,11 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                   </div>
                 </div>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field icon={<MapPin size={16} />} label="Zip Code*" value={apply.zip} onChange={v => updateApply("zip", v)} />
-                  <Field icon={<Users size={16} />} label="Number of Employees*" value={apply.employees} onChange={v => updateApply("employees", v)} />
+                  <Field icon={<MapPin size={16} />} label="Zip Code*" value={apply.zip} onChange={v => updateApply("zip", v)} autoComplete="postal-code" inputMode="numeric" />
+                  <Field icon={<Users size={16} />} label="Number of Employees*" value={apply.employees} onChange={v => updateApply("employees", v)} inputMode="numeric" />
                 </div>
-                <Field icon={<Globe size={16} />} label="Website URL*" value={apply.website} onChange={v => updateApply("website", v)} />
-                <Field icon={<DollarSign size={16} />} label="Monthly Marketing Budget*" value={apply.budget} onChange={v => updateApply("budget", v)} />
+                <Field icon={<Globe size={16} />} label="Website URL*" value={apply.website} onChange={v => updateApply("website", v)} autoComplete="url" />
+                <Field icon={<DollarSign size={16} />} label="Monthly Marketing Budget*" value={apply.budget} onChange={v => updateApply("budget", v)} inputMode="numeric" />
                   <div>
                     <label className="mb-2 block text-sm font-black text-slate-900">Anything else you'd like us to know?</label>
                     <textarea value={apply.notes} onChange={e => updateApply("notes", e.target.value)}
@@ -1240,8 +1240,8 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
   )
 }
 
-function Field({ icon, label, value, onChange, prefix }: {
-  icon: React.ReactNode; label: string; value: string; onChange: (v: string) => void; prefix?: string
+function Field({ icon, label, value, onChange, prefix, autoComplete, inputMode }: {
+  icon: React.ReactNode; label: string; value: string; onChange: (v: string) => void; prefix?: string; autoComplete?: string; inputMode?: string
 }) {
   return (
     <div>
@@ -1249,7 +1249,7 @@ function Field({ icon, label, value, onChange, prefix }: {
       <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm focus-within:border-navy/40 focus-within:shadow-md focus-within:shadow-navy/5 transition-all duration-300">
         <span className="text-slate-400 shrink-0">{icon}</span>
         {prefix && <span className="rounded-lg bg-slate-50 px-2.5 py-1 text-xs font-black text-slate-500 border border-slate-100">{prefix}</span>}
-        <input value={value} onChange={e => onChange(e.target.value)} className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-slate-400" />
+        <input value={value} onChange={e => onChange(e.target.value)} autoComplete={autoComplete} inputMode={inputMode as any} className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-slate-400" />
       </div>
     </div>
   )
