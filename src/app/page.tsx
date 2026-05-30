@@ -1000,7 +1000,7 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
               {t.apply.stepLabel} {step}/4
             </p>
             <h2 className="text-xl font-black tracking-[-0.03em] text-slate-900 md:text-2xl">
-              {step === 1 ? "Your Contact Info" : step === 2 ? "Tell Us About Your Business" : step === 3 ? "Choose Your Plan" : t.apply.title3}
+              {step === 1 ? t.apply.title1 : step === 2 ? t.apply.title2 : step === 3 ? "Choose Your Plan" : t.apply.title3}
             </h2>
           </div>
           <button onClick={onClose} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-0 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
@@ -1029,30 +1029,15 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                 transition={{ duration: 0.3 }}
                 className="grid gap-4"
               >
-                <p className="text-sm font-semibold text-slate-500">Let's start with your basic information. We'll keep it quick.</p>
                 <div className="grid gap-4 md:grid-cols-2">
-                  <Field icon={<User size={16} />} label="First Name*" value={apply.firstName} onChange={v => updateApply("firstName", v)} auto="given-name" />
-                  <Field icon={<User size={16} />} label="Last Name*" value={apply.lastName} onChange={v => updateApply("lastName", v)} auto="family-name" />
+                  <Field icon={<User size={16} />} label="First Name*" value={apply.firstName} onChange={v => updateApply("firstName", v)} />
+                  <Field icon={<User size={16} />} label="Last Name*" value={apply.lastName} onChange={v => updateApply("lastName", v)} />
                 </div>
-                <Field icon={<Mail size={16} />} label="Email Address*" value={apply.email} onChange={v => updateApply("email", v)} auto="email" inputmode="email" />
-                <Field icon={<PhoneCall size={16} />} label="Phone Number*" value={apply.phone} onChange={v => updateApply("phone", v)} prefix="🇺🇸 +1" auto="tel" inputmode="tel" />
-              </motion.div>
-            )}
-
-            {step === 2 && (
-              <motion.div
-                key="step2"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                className="grid gap-4"
-              >
-                <p className="text-sm font-semibold text-slate-500">Tell us about your business so we can match you with the right customers.</p>
-                <Field icon={<Building2 size={16} />} label="Company Name*" value={apply.company} onChange={v => updateApply("company", v)} auto="organization" />
+                <Field icon={<Building2 size={16} />} label="Company Name*" value={apply.company} onChange={v => updateApply("company", v)} />
+                <Field icon={<Mail size={16} />} label="Email*" value={apply.email} onChange={v => updateApply("email", v)} />
+                <Field icon={<PhoneCall size={16} />} label="Phone Number*" value={apply.phone} onChange={v => updateApply("phone", v)} prefix="🇺🇸 +1" />
                 <div>
-                  <label className="mb-3 block text-sm font-black text-slate-900">What services do you provide?*</label>
-                  <p className="mb-3 text-xs font-medium text-slate-400">Select all that apply</p>
+                  <label className="mb-3 block text-sm font-black text-slate-900">What services does your business provide?*</label>
                   <div className="grid gap-2.5 sm:grid-cols-2">
                     {services.map(s => {
                       const Icon = s.icon
@@ -1088,7 +1073,50 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                     })}
                   </div>
                 </div>
-                <Field icon={<MapPin size={16} />} label="Zip Code*" value={apply.zip} onChange={v => updateApply("zip", v)} auto="postal-code" inputmode="numeric" />
+              </motion.div>
+            )}
+
+            {step === 2 && (
+              <motion.div
+                key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                className="grid gap-4"
+              >
+                <div className="rounded-2xl bg-gradient-to-r from-navy/5 to-navy/3 border border-navy/10 p-4 text-sm font-semibold leading-6 text-navy shadow-sm">
+                  {t.apply.subtitle2}
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-black text-slate-900">Are you located in the United States?*</label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {["Yes", "No"].map(item => (
+                      <button key={item} onClick={() => updateApply("locatedUS", item)}
+                        className={cn(
+                          "flex items-center justify-center gap-2 rounded-2xl border px-4 py-3.5 text-sm font-black transition-all duration-300 shadow-sm",
+                          apply.locatedUS === item ? "border-navy bg-navy/5 text-navy shadow-navy/5" : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                        )}
+                      >
+                        {item === "Yes" && <span className="text-lg">🇺🇸</span>}
+                        {item}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Field icon={<MapPin size={16} />} label="Zip Code*" value={apply.zip} onChange={v => updateApply("zip", v)} />
+                  <Field icon={<Users size={16} />} label="Number of Employees*" value={apply.employees} onChange={v => updateApply("employees", v)} />
+                </div>
+                <Field icon={<Globe size={16} />} label="Website URL*" value={apply.website} onChange={v => updateApply("website", v)} />
+                <Field icon={<DollarSign size={16} />} label="Monthly Marketing Budget*" value={apply.budget} onChange={v => updateApply("budget", v)} />
+                  <div>
+                    <label className="mb-2 block text-sm font-black text-slate-900">Anything else you'd like us to know?</label>
+                    <textarea value={apply.notes} onChange={e => updateApply("notes", e.target.value)}
+                      className="min-h-24 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-sm font-medium outline-none shadow-sm focus:border-navy/40 focus:shadow-md focus:shadow-navy/5 transition-all duration-300"
+                      placeholder="Service area, lead goals, or team capacity..."
+                    />
+                  </div>
               </motion.div>
             )}
 
@@ -1099,9 +1127,8 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="grid gap-5"
               >
-                <p className="text-sm font-semibold text-slate-500">Choose the plan that fits your needs. You can always upgrade later.</p>
+                <p className="mb-6 text-sm font-semibold text-slate-500">Choose the plan that fits your needs. You can always upgrade later.</p>
                 <div className="grid gap-4 md:grid-cols-3">
                   {t.plans.map((plan) => {
                     const active = apply.plan === plan.name
@@ -1142,14 +1169,6 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                       </button>
                     )
                   })}
-                </div>
-                <Field icon={<DollarSign size={16} />} label="Monthly Budget (optional)" value={apply.budget} onChange={v => updateApply("budget", v)} auto="" placeholder="How much are you planning to spend on leads per month?" />
-                <div>
-                  <label className="mb-2 block text-sm font-black text-slate-900">Anything else? (optional)</label>
-                  <textarea value={apply.notes} onChange={e => updateApply("notes", e.target.value)}
-                    className="min-h-20 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-sm font-medium outline-none shadow-sm focus:border-navy/40 focus:shadow-md focus:shadow-navy/5 transition-all duration-300"
-                    placeholder="Service area, lead goals, or anything you'd like us to know..."
-                  />
                 </div>
               </motion.div>
             )}
@@ -1194,7 +1213,7 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
               )}
               <button
                 onClick={step === 3 ? onSubmit : () => setStep(step + 1)}
-                disabled={submitting || (step === 1 && (!apply.firstName || !apply.lastName || !apply.email || !apply.phone)) || (step === 2 && (!apply.company || apply.services.length === 0 || !apply.zip)) || (step === 3 && !apply.plan)}
+                disabled={submitting || (step === 1 && (!apply.firstName || !apply.lastName || !apply.company || !apply.email || !apply.phone || apply.services.length === 0)) || (step === 2 && (!apply.locatedUS || !apply.zip || !apply.employees || !apply.website || !apply.budget)) || (step === 3 && !apply.plan)}
                 className="flex items-center gap-2 rounded-xl bg-navy px-6 py-3 text-sm font-black text-white shadow-lg shadow-navy/20 hover:bg-navy-2 hover:shadow-xl hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {submitting ? (
@@ -1214,8 +1233,8 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
   )
 }
 
-function Field({ icon, label, value, onChange, prefix, auto, inputmode, placeholder }: {
-  icon: React.ReactNode; label: string; value: string; onChange: (v: string) => void; prefix?: string; auto?: string; inputmode?: string; placeholder?: string
+function Field({ icon, label, value, onChange, prefix }: {
+  icon: React.ReactNode; label: string; value: string; onChange: (v: string) => void; prefix?: string
 }) {
   return (
     <div>
@@ -1223,7 +1242,7 @@ function Field({ icon, label, value, onChange, prefix, auto, inputmode, placehol
       <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 shadow-sm focus-within:border-navy/40 focus-within:shadow-md focus-within:shadow-navy/5 transition-all duration-300">
         <span className="text-slate-400 shrink-0">{icon}</span>
         {prefix && <span className="rounded-lg bg-slate-50 px-2.5 py-1 text-xs font-black text-slate-500 border border-slate-100">{prefix}</span>}
-        <input value={value} onChange={e => onChange(e.target.value)} autoComplete={auto} inputMode={inputmode as any} placeholder={placeholder} className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-slate-400" />
+        <input value={value} onChange={e => onChange(e.target.value)} className="w-full bg-transparent text-sm font-medium outline-none placeholder:text-slate-400" />
       </div>
     </div>
   )
