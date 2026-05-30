@@ -240,9 +240,6 @@ export default function HomeFlowLeadsApp() {
   const [chatOpen, setChatOpen] = useState(false)
   const [chatMessages, setChatMessages] = useState<{role:"bot"|"user";text:string}[]>([])
   const [chatInput, setChatInput] = useState("")
-  const chatRef = useRef({name:"",phone:"",email:""})
-  const [chatStep, setChatStep] = useState(-1) // -1=waiting, 0=lead form, 3=free
-  const [leadForm, setLeadForm] = useState({ name:"", phone:"", email:"" })
   const [applyOpen, setApplyOpen] = useState(false)
   const [applyStep, setApplyStep] = useState(1)
   const [scrolled, setScrolled] = useState(false)
@@ -269,27 +266,8 @@ export default function HomeFlowLeadsApp() {
     if (!msg) return
     addUserMsg(msg)
     setChatInput("")
-
-    const c = chatRef.current
-    const reply = getChatReply(msg, c.name.split(" ")[0] || "there")
+    const reply = getChatReply(msg, "there")
     setTimeout(() => addBotMsg(reply), 500)
-  }
-
-  const handleLeadSubmit = () => {
-    const { name, phone, email } = leadForm
-    if (!name.trim() || !phone.trim() || !email.trim()) return
-    chatRef.current = { name, phone, email }
-    submitForm({ type:"chat", name, phone, email, message:"Chat lead captured" })
-    setChatStep(3)
-    addBotMsg(`Thanks, ${name.split(" ")[0]}! I'm here to answer any questions about HomeFlow Leads. What would you like to know?`)
-  }
-
-  const openChat = () => {
-    setChatOpen(true)
-    if (chatMessages.length === 0) {
-      setChatStep(0)
-      setLeadForm({ name:"", phone:"", email:"" })
-    }
   }
 
   const updateApply = (field: string, value: string) => setApply(a => ({ ...a, [field]: value }))
@@ -803,7 +781,7 @@ export default function HomeFlowLeadsApp() {
 
       {/* ─── CHAT WIDGET ────────────────────────────────────── */}
       <AnimatePresence>
-        {chatOpen && <ChatWidget messages={chatMessages} input={chatInput} onInput={setChatInput} onSend={handleChatSend} onClose={() => setChatOpen(false)} showLeadForm={chatStep === 0} leadForm={leadForm} setLeadForm={setLeadForm} onLeadSubmit={handleLeadSubmit} />}
+        {chatOpen && <ChatWidget messages={chatMessages} input={chatInput} onInput={setChatInput} onSend={handleChatSend} onClose={() => setChatOpen(false)} />}
       </AnimatePresence>
 
       {/* ─── APPLICATION MODAL ──────────────────────────────── */}
@@ -844,16 +822,12 @@ function Logo() {
 }
 
 // ─── Chat Widget ───────────────────────────────────────────────────
-function ChatWidget({ messages, input, onInput, onSend, onClose, showLeadForm, leadForm, setLeadForm, onLeadSubmit }: {
-  messages: {role:"bot"|"user";text:string}[]
+function ChatWidget({ messages, input, onInput, onSend, onClose }: {
+  messages: { role: string; text: string }[]
   input: string
-  onInput: (v:string) => void
-  onSend: (v:string) => void
+  onInput: (v: string) => void
+  onSend: (v: string) => void
   onClose: () => void
-  showLeadForm?: boolean
-  leadForm?: { name:string; phone:string; email:string }
-  setLeadForm?: (v:{name:string;phone:string;email:string}) => void
-  onLeadSubmit?: () => void
 }) {
   const bottomRef = useRef<HTMLDivElement>(null)
   const [kbOffset, setKbOffset] = useState(0)
@@ -872,8 +846,6 @@ function ChatWidget({ messages, input, onInput, onSend, onClose, showLeadForm, l
   const handleKey = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(input) }
   }
-
-  const valid = leadForm && leadForm.name.trim() && leadForm.phone.trim() && leadForm.email.trim()
 
   return (
     <motion.div
@@ -900,65 +872,37 @@ function ChatWidget({ messages, input, onInput, onSend, onClose, showLeadForm, l
         </button>
       </div>
 
-      {showLeadForm ? (
-        <div className="flex flex-1 flex-col justify-center px-6 py-6">
-          <div className="mb-6 text-center">
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-navy/10 text-navy">
-              <MessageCircle size={22} />
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+        {messages.map((m, i) => (
+          <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div className={`max-w-[85%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 ${
+              m.role === "user"
+                ? "bg-navy text-white rounded-br-md"
+                : "bg-slate-100 text-slate-700 rounded-bl-md"
+            }`}>
+              {m.text}
             </div>
-            <h3 className="text-lg font-black text-slate-900">Let's Get Started</h3>
-            <p className="mt-1 text-xs font-semibold text-slate-500">Enter your details to start chatting</p>
           </div>
-          <div className="grid gap-3">
-            <input value={leadForm?.name||""} onChange={e => setLeadForm?.({ ...leadForm!, name:e.target.value })} placeholder="Your Name *"
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
-            <input value={leadForm?.phone||""} onChange={e => setLeadForm?.({ ...leadForm!, phone:e.target.value })} placeholder="Phone Number *"
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
-            <input value={leadForm?.email||""} onChange={e => setLeadForm?.({ ...leadForm!, email:e.target.value })} placeholder="Email Address *"
-              className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium outline-none focus:border-navy/30 focus:bg-white focus:shadow-sm transition-all" />
-            <button onClick={onLeadSubmit} disabled={!valid}
-              className="mt-2 w-full rounded-2xl bg-navy py-3.5 text-sm font-black text-white shadow-lg shadow-navy/20 hover:bg-navy-2 hover:-translate-y-0.5 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-            >
-              Start Chatting
-            </button>
-          </div>
-          <p className="mt-4 text-center text-[10px] font-medium text-slate-400">Your info won't be shared with third parties</p>
-        </div>
-      ) : (
-        <>
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
-            {messages.map((m, i) => (
-              <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] whitespace-pre-line rounded-2xl px-4 py-3 text-sm leading-6 ${
-                  m.role === "user"
-                    ? "bg-navy text-white rounded-br-md"
-                    : "bg-slate-100 text-slate-700 rounded-bl-md"
-                }`}>
-                  {m.text}
-                </div>
-              </div>
-            ))}
-            <div ref={bottomRef} />
-          </div>
+        ))}
+        <div ref={bottomRef} />
+      </div>
 
-          <div className="border-t border-slate-200 p-3">
-            <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 focus-within:border-navy/30 focus-within:bg-white transition-all">
-              <input
-                value={input}
-                onChange={e => onInput(e.target.value)}
-                onKeyDown={handleKey}
-                placeholder="Type a message..."
-                className="flex-1 bg-transparent text-sm font-medium outline-none placeholder:text-slate-400"
-              />
-              <button onClick={() => onSend(input)} disabled={!input.trim()}
-                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-navy text-white hover:bg-navy-2 disabled:opacity-40 transition-all"
-              >
-                <Send size={14} />
-              </button>
-            </div>
-          </div>
-        </>
-      )}
+      <div className="border-t border-slate-200 p-3">
+        <div className="flex items-center gap-2 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2.5 focus-within:border-navy/30 focus-within:bg-white transition-all">
+          <input
+            value={input}
+            onChange={e => onInput(e.target.value)}
+            onKeyDown={handleKey}
+            placeholder="Type a message..."
+            className="flex-1 bg-transparent text-sm font-medium outline-none placeholder:text-slate-400"
+          />
+          <button onClick={() => onSend(input)} disabled={!input.trim()}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-navy text-white hover:bg-navy-2 disabled:opacity-40 transition-all"
+          >
+            <Send size={14} />
+          </button>
+        </div>
+      </div>
     </motion.div>
   )
 }
