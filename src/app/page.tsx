@@ -432,7 +432,7 @@ export default function HomeFlowLeadsApp() {
                   </div>
                   <div className="mt-6 pt-6 border-t border-white/10">
                     <button onClick={openApply} className="w-full group flex items-center justify-center gap-2 rounded-2xl bg-gold px-5 py-3.5 font-extrabold text-navy hover:bg-gold-light transition-all hover:shadow-lg hover:shadow-gold/20">
-                      {t.primaryCta} <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
+                      Get Started 7-Day Free Trial <ArrowRight size={17} className="transition-transform group-hover:translate-x-1" />
                     </button>
                   </div>
                 </div>
