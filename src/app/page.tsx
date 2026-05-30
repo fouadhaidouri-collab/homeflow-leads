@@ -981,6 +981,21 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
   submitting: boolean
   submitError: string
 }) {
+  useEffect(() => {
+    if (step !== 5) return
+    const script = document.createElement("script")
+    script.src = "https://www.paypal.com/sdk/js?client-id=BAA2PEPIIWOeJr5FWxm4w_Qe2RIj31ly2nwo_LCRp1VnxmsS7F0JM9q9QqZMJ2xirnTBGs6os5hwgkEEf8&components=hosted-buttons&disable-funding=venmo&currency=USD"
+    script.onload = () => {
+      if ((window as any).paypal?.HostedButtons) {
+        (window as any).paypal.HostedButtons({
+          hostedButtonId: "VLVYUH9WQQDCY",
+        }).render("#paypal-container-VLVYUH9WQQDCY")
+      }
+    }
+    document.body.appendChild(script)
+    return () => { try { document.body.removeChild(script) } catch {} }
+  }, [step])
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -998,10 +1013,10 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
         <div className="flex items-center justify-between border-b border-slate-200/70 px-6 py-5">
           <div>
             <p className="mb-1.5 text-xs font-black uppercase tracking-[0.15em] text-navy/70">
-              {t.apply.stepLabel} {step}/4
+              {t.apply.stepLabel} {step === 5 ? 5 : step}/{step === 5 ? 5 : 4}
             </p>
             <h2 className="text-xl font-black tracking-[-0.03em] text-slate-900 md:text-2xl">
-              {step === 1 ? t.apply.title1 : step === 2 ? t.apply.title2 : step === 3 ? "Choose Your Plan" : t.apply.title3}
+              {step === 1 ? t.apply.title1 : step === 2 ? t.apply.title2 : step === 3 ? "Choose Your Plan" : step === 5 ? "Payment" : t.apply.title3}
             </h2>
           </div>
           <button onClick={onClose} className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-slate-200 bg-white p-0 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
@@ -1205,7 +1220,33 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                 <h3 className="text-3xl font-black tracking-[-0.04em] text-slate-900">{t.apply.thanks}</h3>
                 <p className="mx-auto mt-4 max-w-md font-medium leading-7 text-slate-500">{t.apply.thanksText}</p>
                 <p className="mx-auto mt-3 max-w-md text-sm font-semibold text-slate-400">{t.apply.thanksNote}</p>
-                <button onClick={onClose} className="mt-8 rounded-2xl bg-navy px-8 py-3.5 font-black text-white hover:bg-navy-2 transition-all">
+                <div className="mt-8 flex flex-col items-center gap-3">
+                  {(apply.plan === "Starter" || apply.plan === "Growth") && (
+                    <button onClick={() => setStep(5)} className="w-full max-w-xs rounded-2xl bg-gold px-8 py-3.5 font-black text-navy hover:bg-gold-2 transition-all shadow-lg shadow-gold/30">
+                      Proceed to Payment
+                    </button>
+                  )}
+                  <button onClick={onClose} className="w-full max-w-xs rounded-2xl bg-navy px-8 py-3.5 font-black text-white hover:bg-navy-2 transition-all">
+                    {t.apply.close}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+            {step === 5 && (
+              <motion.div
+                key="step5"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="py-6 text-center"
+              >
+                <h3 className="text-2xl font-black tracking-[-0.03em] text-slate-900">Complete Your Payment</h3>
+                <p className="mx-auto mt-2 max-w-md text-sm font-medium text-slate-500">Secure your Starter plan to start receiving leads.</p>
+                <div className="mx-auto mt-6 max-w-sm">
+                  <div id="paypal-container-VLVYUH9WQQDCY"></div>
+                </div>
+                <button onClick={onClose} className="mt-6 rounded-2xl bg-navy px-8 py-3.5 font-black text-white hover:bg-navy-2 transition-all">
                   {t.apply.close}
                 </button>
               </motion.div>
