@@ -1171,6 +1171,17 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                     )
                   })}
                 </div>
+                {(() => {
+                  const selected = t.plans.find(p => p.name === apply.plan)
+                  if (!selected) return null
+                  return (
+                    <div className="mt-6 rounded-2xl border border-navy/10 bg-gradient-to-r from-navy/5 to-navy/3 p-5 text-center shadow-sm">
+                      <p className="text-sm font-semibold text-slate-500">{selected.name} Plan</p>
+                      <p className="mt-1 text-3xl font-black text-navy">{selected.total}</p>
+                      <p className="text-xs font-medium text-slate-400">estimated monthly total</p>
+                    </div>
+                  )
+                })()}
               </motion.div>
             )}
 
