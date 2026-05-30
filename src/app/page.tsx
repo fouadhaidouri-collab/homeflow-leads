@@ -101,9 +101,9 @@ const EN = {
   pricingText: "No complicated contracts. Start small, test quality, then scale when results make sense.",
   bestChoice: "Best Choice",
   plans: [
-    { name: "Starter", desc: "For your first test", price: "$10", total: "$250/mo", items: ["Per qualified customer", "Up to 25/month", "Valid contact included", "Wrong numbers replaced"], featured: false },
-    { name: "Growth", desc: "For steady growth", price: "$25", total: "$2,500/mo", items: ["Per exclusive qualified customer", "Up to 100/month", "Weekly delivery", "Not sold to competitors", "Priority support"], featured: true },
-    { name: "Premium", desc: "For high intent", price: "$75", total: "$3,000/mo", items: ["Per high-intent customer", "Up to 40/month", "Priority delivery", "Stronger verification", "Dedicated account manager"], featured: false },
+    { name: "Starter", desc: "For your first test", price: "$10", total: "$250/mo", leads: "Up to 25/month", items: ["Per qualified customer", "Up to 25/month", "Valid contact included", "Wrong numbers replaced"], featured: false },
+    { name: "Growth", desc: "For steady growth", price: "$25", total: "$2,500/mo", leads: "Up to 100/month", items: ["Per exclusive qualified customer", "Up to 100/month", "Weekly delivery", "Not sold to competitors", "Priority support"], featured: true },
+    { name: "Premium", desc: "For high intent", price: "$75", total: "$3,000/mo", leads: "Up to 40/month", items: ["Per high-intent customer", "Up to 40/month", "Priority delivery", "Stronger verification", "Dedicated account manager"], featured: false },
   ],
   guaranteeEyebrow: "TRANSPARENCY",
   guaranteeTitle: "Clear rules. No hidden promises.",
@@ -1178,7 +1178,7 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                     <div className="mt-6 rounded-2xl border border-navy/10 bg-gradient-to-r from-navy/5 to-navy/3 p-5 text-center shadow-sm">
                       <p className="text-sm font-semibold text-slate-500">{selected.name} Plan</p>
                       <p className="mt-1 text-3xl font-black text-navy">{selected.total}</p>
-                      <p className="text-xs font-medium text-slate-400">estimated monthly total</p>
+                      <p className="text-xs font-medium text-slate-500">{selected.leads} · per agent monthly</p>
                     </div>
                   )
                 })()}
