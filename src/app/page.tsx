@@ -789,17 +789,22 @@ export default function HomeFlowLeadsApp() {
       </footer>
 
       {/* ─── CHAT BUTTON ────────────────────────────────────── */}
-      <motion.button
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setChatOpen(!chatOpen)}
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-navy text-white shadow-2xl shadow-navy/30 hover:bg-navy-2 transition-colors"
-      >
-        {chatOpen ? <X size={24} /> : <MessageCircle size={24} />}
-        {!chatOpen && <span className="absolute top-0.5 right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-sm" />}
-      </motion.button>
+      <AnimatePresence>
+        {!chatOpen && (
+          <motion.button
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={openChat}
+            className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-navy text-white shadow-2xl shadow-navy/30 hover:bg-navy-2 transition-colors"
+          >
+            <MessageCircle size={24} />
+            <span className="absolute top-0.5 right-0.5 h-3.5 w-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-sm" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* ─── CHAT WIDGET ────────────────────────────────────── */}
       <AnimatePresence>
