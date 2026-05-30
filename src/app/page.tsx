@@ -128,8 +128,9 @@ const EN = {
     title2: "Tell us about your business",
     subtitle2: "This helps us understand your service area, capacity, and whether we can support your growth.",
     title3: "You're all set!",
-    thanks: "Thank you for your application!",
-    thanksText: "Our team will review your application and reach out if you're a good fit.",
+    thanks: "Thank You — Your Request Has Been Received!",
+    thanksText: "Our team will review your information and contact you shortly if your business is a good fit for our 7-day free trial.",
+    thanksNote: "Please keep an eye on your email or phone for our follow-up.",
     prev: "Previous",
     next: "Next",
     close: "Close",
@@ -1192,6 +1193,7 @@ function ApplicationModal({ t, step, setStep, apply, updateApply, toggleService,
                 </motion.div>
                 <h3 className="text-3xl font-black tracking-[-0.04em] text-slate-900">{t.apply.thanks}</h3>
                 <p className="mx-auto mt-4 max-w-md font-medium leading-7 text-slate-500">{t.apply.thanksText}</p>
+                <p className="mx-auto mt-3 max-w-md text-sm font-semibold text-slate-400">{t.apply.thanksNote}</p>
                 <button onClick={onClose} className="mt-8 rounded-2xl bg-navy px-8 py-3.5 font-black text-white hover:bg-navy-2 transition-all">
                   {t.apply.close}
                 </button>
