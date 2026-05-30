@@ -369,8 +369,8 @@ export default function HomeFlowLeadsApp() {
 
           <div className="relative z-10 mx-auto grid max-w-8xl items-center gap-12 px-5 py-12 md:grid-cols-2 md:px-8 md:py-0">
             <motion.div initial="hidden" animate="show" variants={stagger}>
-              <motion.div variants={fadeUp} className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/20 bg-gold/8 px-5 py-2 text-sm font-bold text-navy shadow-sm">
-                <MapPin size={15} />
+              <motion.div variants={fadeUp} className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/20 bg-gold/8 px-5 py-2 text-xs font-bold text-navy shadow-sm sm:text-sm whitespace-nowrap">
+                <Sparkles size={14} className="text-gold shrink-0" />
                 {t.badge}
               </motion.div>
 
@@ -382,7 +382,7 @@ export default function HomeFlowLeadsApp() {
                 )}
               </motion.h1>
 
-              <motion.p variants={fadeUp} className="mt-5 max-w-xl text-lg leading-8 text-slate-500">
+              <motion.p variants={fadeUp} className="mt-5 max-w-xl text-base leading-7 text-slate-500 md:text-lg md:leading-8">
                 {t.heroText}
               </motion.p>
 
@@ -860,7 +860,18 @@ function ChatWidget({ messages, input, onInput, onSend, onClose, showLeadForm, l
   onLeadSubmit?: () => void
 }) {
   const bottomRef = useRef<HTMLDivElement>(null)
+  const [kbOffset, setKbOffset] = useState(0)
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior:"smooth" }) }, [messages])
+  useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return
+    const onResize = () => {
+      const diff = window.innerHeight - vv.height
+      setKbOffset(Math.max(0, diff))
+    }
+    vv.addEventListener("resize", onResize)
+    return () => vv.removeEventListener("resize", onResize)
+  }, [])
 
   const handleKey = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(input) }
@@ -874,8 +885,8 @@ function ChatWidget({ messages, input, onInput, onSend, onClose, showLeadForm, l
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 20, scale: 0.95 }}
       transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-      className="fixed bottom-24 right-5 z-50 flex w-[calc(100vw-2.5rem)] max-w-sm flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-400/20 md:right-8"
-      style={{ height: "520px" }}
+      className={`fixed z-50 flex w-[calc(100vw-2.5rem)] max-w-sm flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-400/20 md:right-8 ${kbOffset > 0 ? "bottom-2 right-2" : "bottom-24 right-5"}`}
+      style={{ height: "520px", bottom: kbOffset > 0 ? `${kbOffset + 8}px` : undefined }}
     >
       <div className="flex items-center justify-between bg-navy px-5 py-4 text-white">
         <div className="flex items-center gap-3">
